@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Pokerole Companion</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+background:#e64b2c;
+color:white;
+}
+
+.header{
+padding:15px;
+font-size:20px;
+text-align:center;
+background:#d13e22;
+}
+
+.nav{
+display:flex;
+justify-content:space-around;
+background:#c43a1f;
+padding:10px;
+}
+
+.nav button{
+background:none;
+border:none;
+color:white;
+font-size:16px;
+}
+
+.container{
+padding:15px;
+}
+
+.card{
+background:#f05a38;
+border-radius:15px;
+padding:15px;
+margin-bottom:15px;
+}
+
+.statsCard{
+background:#18b7c5;
+border-radius:15px;
+padding:15px;
+margin-bottom:15px;
+}
+
+.statRow{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:10px;
+gap:10px;
+}
+
+.points{
+display:flex;
+gap:5px;
+}
+
+.point{
+width:26px;
+height:26px;
+border-radius:6px;
+background:#ffffff55;
+border:1px solid white;
+cursor:pointer;
+}
+
+.point.active{
+background:white;
+}
+
+/* Contest stats */
+
+.contestRow{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:8px 12px;
+border-radius:10px;
+margin-bottom:8px;
+}
+
+.contestRow span{
+font-weight:bold;
+}
+
+.tough{background:#e8c86a}
+.cool{background:#e59a82}
+.beauty{background:#8aa9d8}
+.cute{background:#e7a3c0}
+.clever{background:#a7cf8c}
+
+/* Pokemon team */
+
+.team{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:10px;
+}
+
+.pokemon{
+background:#18b7c5;
+padding:15px;
+border-radius:12px;
+text-align:center;
+}
+
+/* Dice */
+
+.dice{
+font-size:40px;
+text-align:center;
+margin-top:10px;
+}
+
+.roll{
+background:#18b7c5;
+border:none;
+padding:10px;
+border-radius:10px;
+width:100%;
+font-size:18px;
+margin-top:10px;
+color:white;
+}
+
+input, select{
+width:100%;
+padding:8px;
+border:none;
+border-radius:8px;
+margin-top:5px;
+}
+
+textarea{
+width:100%;
+border:none;
+border-radius:8px;
+padding:8px;
+margin-top:5px;
+}
+
+label{
+display:block;
+margin-top:10px;
+font-weight:bold;
+}
+
+.skillName{
+flex:1;
+}
+
+.toolButtons{
+display:flex;
+gap:10px;
+margin-top:10px;
+}
+
+.toolButtons button{
+flex:1;
+padding:10px;
+border:none;
+border-radius:8px;
+background:#18b7c5;
+color:white;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="header">Pokerole Companion</div>
+
+<div class="nav">
+<button onclick="show('trainer')">Trainer</button>
+<button onclick="show('team')">Team</button>
+<button onclick="show('dice')">Dice</button>
+</div>
+
+<div class="container">
+
+<div id="trainer">
+
+<div class="card">
+
+<h3>Trainer</h3>
+
+<label>Name</label> <input id="name">
+
+<label>Nature</label> <select id="trainerNature"></select>
+
+<label>Money</label> <input id="money">
+
+<label>HP</label> <input id="hp" type="number">
+
+<label>Will</label> <input id="will" type="number">
+
+<label>Confidence</label> <input id="confidence" type="number">
+
+<label>Concept</label>
+
+<textarea id="concept"></textarea>
+
+<div class="toolButtons">
+<button onclick="exportTrainer()">Export</button>
+<input type="file" onchange="importTrainer(event)">
+</div>
+
+</div>
+
+<div class="statsCard">
+
+<h3>Stats</h3>
+
+<div class="statRow"><span>Strength</span><div class="points" data-id="strength"></div></div>
+<div class="statRow"><span>Dexterity</span><div class="points" data-id="dexterity"></div></div>
+<div class="statRow"><span>Vitality</span><div class="points" data-id="vitality"></div></div>
+<div class="statRow"><span>Insight</span><div class="points" data-id="insight"></div></div>
+
+</div>
+
+<div class="card">
+
+<h3>Skills</h3>
+
+<div class="statRow"><span class="skillName">Brawl</span><div class="points" data-id="brawl"></div></div>
+<div class="statRow"><span class="skillName">Throw</span><div class="points" data-id="throw"></div></div>
+<div class="statRow"><span class="skillName">Evasion</span><div class="points" data-id="evasion"></div></div>
+<div class="statRow"><span class="skillName">Weapons</span><div class="points" data-id="weapons"></div></div>
+<div class="statRow"><span class="skillName">Alert</span><div class="points" data-id="alert"></div></div>
+<div class="statRow"><span class="skillName">Athletic</span><div class="points" data-id="athletic"></div></div>
+<div class="statRow"><span class="skillName">Nature</span><div class="points" data-id="natureSkill"></div></div>
+<div class="statRow"><span class="skillName">Stealth</span><div class="points" data-id="stealth"></div></div>
+<div class="statRow"><span class="skillName">Allure</span><div class="points" data-id="allure"></div></div>
+<div class="statRow"><span class="skillName">Etiquette</span><div class="points" data-id="etiquette"></div></div>
+<div class="statRow"><span class="skillName">Intimidate</span><div class="points" data-id="intimidate"></div></div>
+<div class="statRow"><span class="skillName">Perform</span><div class="points" data-id="perform"></div></div>
+<div class="statRow"><span class="skillName">Crafts</span><div class="points" data-id="crafts"></div></div>
+<div class="statRow"><span class="skillName">Lore</span><div class="points" data-id="lore"></div></div>
+<div class="statRow"><span class="skillName">Medicine</span><div class="points" data-id="medicine"></div></div>
+<div class="statRow"><span class="skillName">Science</span><div class="points" data-id="science"></div></div>
+
+<div class="statRow"><input class="skillName" id="custom1"><div class="points" data-id="custom1"></div></div>
+<div class="statRow"><input class="skillName" id="custom2"><div class="points" data-id="custom2"></div></div>
+<div class="statRow"><input class="skillName" id="custom3"><div class="points" data-id="custom3"></div></div>
+<div class="statRow"><input class="skillName" id="custom4"><div class="points" data-id="custom4"></div></div>
+
+</div>
+
+<div class="card">
+
+<h3>Contest Stats</h3>
+
+<div class="contestRow tough"><span>Tough</span><div class="points" data-id="tough"></div></div>
+<div class="contestRow cool"><span>Cool</span><div class="points" data-id="cool"></div></div>
+<div class="contestRow beauty"><span>Beauty</span><div class="points" data-id="beauty"></div></div>
+<div class="contestRow cute"><span>Cute</span><div class="points" data-id="cute"></div></div>
+<div class="contestRow clever"><span>Clever</span><div class="points" data-id="clever"></div></div>
+
+</div>
+
+</div>
+
+<div id="team" style="display:none">
+
+<div class="card">
+
+<h3>Pokémon Team</h3>
+
+<div class="team">
+<div class="pokemon">Pikachu</div>
+<div class="pokemon">Empty</div>
+<div class="pokemon">Empty</div>
+<div class="pokemon">Empty</div>
+<div class="pokemon">Empty</div>
+<div class="pokemon">Empty</div>
+</div>
+
+</div>
+
+</div>
+
+<div id="dice" style="display:none">
+
+<div class="card">
+
+<h3>Dice Roller</h3>
+
+<label>Number of dice</label> <input id="diceCount" type="number" value="1" min="1" max="20">
+
+<div class="dice" id="diceResult">⚀</div>
+
+<button class="roll" onclick="roll()">Roll</button>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+/* navigation */
+
+function show(page){
+document.getElementById("trainer").style.display="none"
+document.getElementById("team").style.display="none"
+document.getElementById("dice").style.display="none"
+document.getElementById(page).style.display="block"
+}
+
+/* create points */
+
+document.querySelectorAll(".points").forEach(group=>{
+
+for(let i=0;i<5;i++){
+let box=document.createElement("div")
+box.className="point"
+group.appendChild(box)
+}
+
+})
+
+/* click points */
+
+document.querySelectorAll(".points").forEach(group=>{
+
+const boxes=group.querySelectorAll(".point")
+
+boxes.forEach((box,index)=>{
+
+box.addEventListener("click",()=>{
+
+let value=index+1
+
+if(box.classList.contains("active") && index===0){
+value=0
+}
+
+boxes.forEach(b=>b.classList.remove("active"))
+
+for(let i=0;i<value;i++){
+boxes[i].classList.add("active")
+}
+
+saveAll()
+
+})
+
+})
+
+})
+
+/* save all */
+
+function saveAll(){
+
+let data={}
+
+document.querySelectorAll("input,textarea,select").forEach(el=>{
+if(!el.id) return
+data[el.id]=el.value
+})
+
+document.querySelectorAll(".points").forEach(group=>{
+const id=group.dataset.id
+const active=group.querySelectorAll(".active").length
+data[id]=active
+})
+
+localStorage.setItem("trainerData",JSON.stringify(data))
+
+}
+
+/* load */
+
+function loadAll(){
+
+let data=JSON.parse(localStorage.getItem("trainerData")||"{}")
+
+document.querySelectorAll("input,textarea,select").forEach(el=>{
+if(!el.id) return
+if(data[el.id]!==undefined){
+el.value=data[el.id]
+}
+})
+
+document.querySelectorAll(".points").forEach(group=>{
+
+const id=group.dataset.id
+const value=data[id]||0
+const boxes=group.querySelectorAll(".point")
+
+boxes.forEach(b=>b.classList.remove("active"))
+
+for(let i=0;i<value;i++){
+boxes[i].classList.add("active")
+}
+
+})
+
+}
+
+/* auto save */
+
+document.querySelectorAll("input,textarea,select").forEach(el=>{
+el.addEventListener("input",saveAll)
+})
+
+/* dice */
+
+function roll(){
+
+const dice=["⚀","⚁","⚂","⚃","⚄","⚅"]
+
+let count=parseInt(document.getElementById("diceCount").value)
+
+let results=[]
+
+for(let i=0;i<count;i++){
+let result=dice[Math.floor(Math.random()*6)]
+results.push(result)
+}
+
+document.getElementById("diceResult").textContent=results.join(" ")
+
+}
+
+/* export */
+
+function exportTrainer(){
+
+let data=localStorage.getItem("trainerData")
+
+let blob=new Blob([data],{type:"application/json"})
+
+let a=document.createElement("a")
+
+a.href=URL.createObjectURL(blob)
+
+a.download="pokerole_trainer.json"
+
+a.click()
+
+}
+
+/* import */
+
+function importTrainer(event){
+
+let file=event.target.files[0]
+
+let reader=new FileReader()
+
+reader.onload=function(){
+
+localStorage.setItem("trainerData",reader.result)
+
+loadAll()
+
+}
+
+reader.readAsText(file)
+
+}
+
+/* nature list */
+
+const natures=[
+"Hardy","Lonely","Brave","Adamant","Naughty",
+"Bold","Docile","Relaxed","Impish","Lax",
+"Timid","Hasty","Serious","Jolly","Naive",
+"Modest","Mild","Quiet","Bashful","Rash",
+"Calm","Gentle","Sassy","Careful","Quirky"
+]
+
+const select=document.getElementById("trainerNature")
+
+natures.forEach(n=>{
+let option=document.createElement("option")
+option.value=n
+option.textContent=n
+select.appendChild(option)
+})
+
+loadAll()
+
+</script>
+
+</body>
+</html>
