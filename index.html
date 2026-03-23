@@ -191,6 +191,8 @@ color:white;
 <button onclick="show('team')">Team</button>
 <button onclick="show('dice')">Dice</button>
 <button onclick="show('moves')">Moves</button>
+<button onclick="show('abilities')">Abilities</button>
+<button onclick="show('pokedex')">Pokedex</button>
 </div>
 
 <div class="container">
@@ -442,13 +444,66 @@ color:white;
 
 </div>
 
+<!-- ABILITIES -->
+
+<div id="abilities" style="display:none">
+
+<div class="card">
+<h3>Recherche d'Ability</h3>
+
+<label>Nom</label>
+<input id="ability_search" list="abilitiesList">
+<datalist id="abilitiesList"></datalist>
+
+</div>
+
+<div class="card" id="ability_result" style="display:none">
+
+<h3 id="ability_name"></h3>
+
+<p><b>Description :</b></p>
+<p id="ability_description"></p>
+
+</div>
+
+</div>
+
+<!-- POKEDEX -->
+
+<div id="pokedex" style="display:none">
+
+<div class="card">
+<h3>Recherche Pokémon</h3>
+
+<label>Nom</label>
+<input id="pokedex_search" list="pokedexList">
+<datalist id="pokedexList"></datalist>
+
+</div>
+
+<div class="card" id="pokedex_result" style="display:none">
+
+<h3 id="pokedex_name"></h3>
+
+<img id="pokedex_sprite" style="width:96px;height:96px;display:block;margin:auto">
+
+<p><b>ID :</b> <span id="pokedex_id"></span></p>
+<p><b>Types :</b> <span id="pokedex_types"></span></p>
+
+<p><b>Stats :</b></p>
+<p id="pokedex_stats"></p>
+
+</div>
+
+</div>
+
 </div>
 
 <script>
 
 /* navigation */
 function show(page){
-["trainer","team","dice","pokemon","moves"].forEach(id=>{
+["trainer","team","dice","pokemon","moves","abilities","pokedex"].forEach(id=>{
 document.getElementById(id).style.display="none"
 })
 document.getElementById(page).style.display="block"
@@ -675,6 +730,106 @@ document.getElementById("move_effect").textContent = move.effect
 
 }
 
+/* ================= ABILITIES ================= */
+
+let ABILITIES = []
+
+async function loadAbilitiesJSON(){
+let res = await fetch("abilities.json")
+ABILITIES = await res.json()
+}
+
+function loadAbilitiesList(){
+let datalist = document.getElementById("abilitiesList")
+datalist.innerHTML = ""
+
+ABILITIES.forEach(a=>{
+let option = document.createElement("option")
+option.value = a.name
+datalist.appendChild(option)
+})
+}
+
+function getAbilityByName(name){
+return ABILITIES.find(a => a.name.toLowerCase() === name.toLowerCase())
+}
+
+function displayAbility(a){
+
+if(!a) return
+
+document.getElementById("ability_result").style.display = "block"
+
+document.getElementById("ability_name").textContent = a.name
+document.getElementById("ability_description").textContent =
+a.description || a.system?.description || ""
+
+}
+
+document.addEventListener("DOMContentLoaded", ()=>{
+let input = document.getElementById("ability_search")
+if(input){
+input.addEventListener("input",(e)=>{
+let a = getAbilityByName(e.target.value)
+displayAbility(a)
+})
+}
+})
+
+/* ================= POKEDEX ================= */
+
+let POKEDEX = []
+
+async function loadPokedexJSON(){
+let res = await fetch("pokedex.json")
+POKEDEX = await res.json()
+}
+
+function loadPokedexList(){
+let datalist = document.getElementById("pokedexList")
+datalist.innerHTML = ""
+
+POKEDEX.forEach(p=>{
+let option = document.createElement("option")
+option.value = p.name
+datalist.appendChild(option)
+})
+}
+
+function getPokemonByName(name){
+return POKEDEX.find(p => p.name.toLowerCase() === name.toLowerCase())
+}
+
+function displayPokedex(p){
+
+if(!p) return
+
+document.getElementById("pokedex_result").style.display = "block"
+
+document.getElementById("pokedex_name").textContent = p.name
+document.getElementById("pokedex_id").textContent = p.id
+
+document.getElementById("pokedex_types").textContent =
+(p.types || []).join(", ")
+
+document.getElementById("pokedex_stats").textContent =
+JSON.stringify(p.stats || {})
+
+document.getElementById("pokedex_sprite").src =
+"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/"+p.id+".png"
+
+}
+
+document.addEventListener("DOMContentLoaded", ()=>{
+let input = document.getElementById("pokedex_search")
+if(input){
+input.addEventListener("input",(e)=>{
+let p = getPokemonByName(e.target.value)
+displayPokedex(p)
+})
+}
+})
+
 /* input listener */
 document.addEventListener("DOMContentLoaded", ()=>{
 let input = document.getElementById("move_search")
@@ -832,8 +987,13 @@ console.log("Pokemon not found")
 async function init(){
 await loadPokemonJSON()
 await loadMovesJSON()
+await loadAbilitiesJSON()
+await loadPokedexJSON()
+
 loadPokemonList()
 loadMovesList()
+loadAbilitiesList()
+loadPokedexList()
 }
 
 init()
