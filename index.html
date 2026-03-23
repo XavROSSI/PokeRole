@@ -115,6 +115,7 @@ background:#18b7c5;
 padding:15px;
 border-radius:12px;
 text-align:center;
+cursor:pointer;
 }
 
 /* Dice */
@@ -186,24 +187,27 @@ color:white;
 <div class="header">Pokerole Companion</div>
 
 <div class="nav">
-<button onclick="show('trainer')">Trainer</button>
+<button onclick="show('trainer')">Dresseur</button>
 <button onclick="show('team')">Team</button>
 <button onclick="show('dice')">Dice</button>
+<button onclick="show('moves')">Moves</button>
 </div>
 
 <div class="container">
+
+<!-- TRAINER -->
 
 <div id="trainer">
 
 <div class="card">
 
-<h3>Trainer</h3>
+<h3>Dresseur</h3>
 
-<label>Name</label> <input id="name">
+<label>Nom</label> <input id="name">
 
 <label>Nature</label> <select id="trainerNature"></select>
 
-<label>Money</label> <input id="money">
+<label>Argent</label> <input id="money">
 
 <label>HP</label> <input id="hp" type="number">
 
@@ -275,6 +279,8 @@ color:white;
 
 </div>
 
+<!-- TEAM -->
+
 <div id="team" style="display:none">
 
 <div class="card">
@@ -282,17 +288,111 @@ color:white;
 <h3>Pokémon Team</h3>
 
 <div class="team">
-<div class="pokemon">Pikachu</div>
-<div class="pokemon">Empty</div>
-<div class="pokemon">Empty</div>
-<div class="pokemon">Empty</div>
-<div class="pokemon">Empty</div>
-<div class="pokemon">Empty</div>
+<div class="pokemon" onclick="openPokemon(0)" id="slot_0">
+<img id="img_0" style="width:64px;height:64px"><div id="name_0">Empty</div>
+</div>
+<div class="pokemon" onclick="openPokemon(1)" id="slot_1">
+<img id="img_1" style="width:64px;height:64px"><div id="name_1">Empty</div>
+</div>
+<div class="pokemon" onclick="openPokemon(2)" id="slot_2">
+<img id="img_2" style="width:64px;height:64px"><div id="name_2">Empty</div>
+</div>
+<div class="pokemon" onclick="openPokemon(3)" id="slot_3">
+<img id="img_3" style="width:64px;height:64px"><div id="name_3">Empty</div>
+</div>
+<div class="pokemon" onclick="openPokemon(4)" id="slot_4">
+<img id="img_4" style="width:64px;height:64px"><div id="name_4">Empty</div>
+</div>
+<div class="pokemon" onclick="openPokemon(5)" id="slot_5">
+<img id="img_5" style="width:64px;height:64px"><div id="name_5">Empty</div>
+</div>
 </div>
 
 </div>
 
 </div>
+
+<!-- POKEMON -->
+
+<div id="pokemon" style="display:none">
+
+<!-- COPY TRAINER STRUCTURE -->
+
+<div class="card">
+
+<h3>Pokémon</h3>
+
+<label>Name</label> 
+<input id="p_name" list="pokemonList">
+<datalist id="pokemonList"></datalist>
+<img id="p_sprite" style="width:96px;height:96px;display:block;margin:auto">
+<label>Pokédex ID</label> <input id="p_id" type="number">
+<label>Nature</label> <select id="p_trainerNature"></select>
+<label>Money</label> <input id="p_money">
+<label>HP</label> <input id="p_hp" type="number">
+<label>Will</label> <input id="p_will" type="number">
+<label>Confidence</label> <input id="p_confidence" type="number">
+<label>Concept</label>
+<textarea id="p_concept"></textarea>
+
+<button onclick="backToTeam()">⬅ Back</button>
+
+</div>
+
+<div class="statsCard">
+
+<h3>Stats</h3>
+
+<div class="statRow"><span>Strength</span><div class="points" data-id="p_strength"></div></div>
+<div class="statRow"><span>Dexterity</span><div class="points" data-id="p_dexterity"></div></div>
+<div class="statRow"><span>Vitality</span><div class="points" data-id="p_vitality"></div></div>
+<div class="statRow"><span>Insight</span><div class="points" data-id="p_insight"></div></div>
+
+</div>
+
+<div class="card">
+
+<h3>Skills</h3>
+
+<div class="statRow"><span class="skillName">Brawl</span><div class="points" data-id="p_brawl"></div></div>
+<div class="statRow"><span class="skillName">Throw</span><div class="points" data-id="p_throw"></div></div>
+<div class="statRow"><span class="skillName">Evasion</span><div class="points" data-id="p_evasion"></div></div>
+<div class="statRow"><span class="skillName">Weapons</span><div class="points" data-id="p_weapons"></div></div>
+<div class="statRow"><span class="skillName">Alert</span><div class="points" data-id="p_alert"></div></div>
+<div class="statRow"><span class="skillName">Athletic</span><div class="points" data-id="p_athletic"></div></div>
+<div class="statRow"><span class="skillName">Nature</span><div class="points" data-id="p_natureSkill"></div></div>
+<div class="statRow"><span class="skillName">Stealth</span><div class="points" data-id="p_stealth"></div></div>
+<div class="statRow"><span class="skillName">Allure</span><div class="points" data-id="p_allure"></div></div>
+<div class="statRow"><span class="skillName">Etiquette</span><div class="points" data-id="p_etiquette"></div></div>
+<div class="statRow"><span class="skillName">Intimidate</span><div class="points" data-id="p_intimidate"></div></div>
+<div class="statRow"><span class="skillName">Perform</span><div class="points" data-id="p_perform"></div></div>
+<div class="statRow"><span class="skillName">Crafts</span><div class="points" data-id="p_crafts"></div></div>
+<div class="statRow"><span class="skillName">Lore</span><div class="points" data-id="p_lore"></div></div>
+<div class="statRow"><span class="skillName">Medicine</span><div class="points" data-id="p_medicine"></div></div>
+<div class="statRow"><span class="skillName">Science</span><div class="points" data-id="p_science"></div></div>
+
+<div class="statRow"><input class="skillName" id="p_custom1"><div class="points" data-id="p_custom1"></div></div>
+<div class="statRow"><input class="skillName" id="p_custom2"><div class="points" data-id="p_custom2"></div></div>
+<div class="statRow"><input class="skillName" id="p_custom3"><div class="points" data-id="p_custom3"></div></div>
+<div class="statRow"><input class="skillName" id="p_custom4"><div class="points" data-id="p_custom4"></div></div>
+
+</div>
+
+<div class="card">
+
+<h3>Contest Stats</h3>
+
+<div class="contestRow tough"><span>Tough</span><div class="points" data-id="p_tough"></div></div>
+<div class="contestRow cool"><span>Cool</span><div class="points" data-id="p_cool"></div></div>
+<div class="contestRow beauty"><span>Beauty</span><div class="points" data-id="p_beauty"></div></div>
+<div class="contestRow cute"><span>Cute</span><div class="points" data-id="p_cute"></div></div>
+<div class="contestRow clever"><span>Clever</span><div class="points" data-id="p_clever"></div></div>
+
+</div>
+
+</div>
+
+<!-- DICE -->
 
 <div id="dice" style="display:none">
 
@@ -310,41 +410,64 @@ color:white;
 
 </div>
 
+<!-- MOVES -->
+
+<div id="moves" style="display:none">
+
+<div class="card">
+<h3>Recherche de Move</h3>
+
+<label>Nom du move</label>
+<input id="move_search" list="movesList">
+<datalist id="movesList"></datalist>
+
+</div>
+
+<div class="card" id="move_result" style="display:none">
+
+<h3 id="move_name"></h3>
+
+<p><b>Type :</b> <span id="move_type"></span></p>
+<p><b>Catégorie :</b> <span id="move_category"></span></p>
+<p><b>Puissance :</b> <span id="move_power"></span></p>
+<p><b>Cible :</b> <span id="move_target"></span></p>
+
+<p><b>Description :</b></p>
+<p id="move_description"></p>
+
+<p><b>Effet :</b></p>
+<p id="move_effect"></p>
+
+</div>
+
+</div>
+
 </div>
 
 <script>
 
 /* navigation */
-
 function show(page){
-document.getElementById("trainer").style.display="none"
-document.getElementById("team").style.display="none"
-document.getElementById("dice").style.display="none"
+["trainer","team","dice","pokemon","moves"].forEach(id=>{
+document.getElementById(id).style.display="none"
+})
 document.getElementById(page).style.display="block"
 }
 
-/* create points */
-
+/* points (inchangé) */
 document.querySelectorAll(".points").forEach(group=>{
-
 for(let i=0;i<5;i++){
 let box=document.createElement("div")
 box.className="point"
 group.appendChild(box)
 }
-
 })
 
-/* click points */
-
 document.querySelectorAll(".points").forEach(group=>{
-
 const boxes=group.querySelectorAll(".point")
 
 boxes.forEach((box,index)=>{
-
 box.addEventListener("click",()=>{
-
 let value=index+1
 
 if(box.classList.contains("active") && index===0){
@@ -357,129 +480,235 @@ for(let i=0;i<value;i++){
 boxes[i].classList.add("active")
 }
 
+if(group.closest("#pokemon")){
+savePokemon()
+}else if(group.closest("#trainer")){
 saveAll()
+}
 
 })
-
+})
 })
 
-})
-
-/* save all */
-
+/* TRAINER SAVE (INCHANGÉ) */
 function saveAll(){
-
 let data={}
 
-document.querySelectorAll("input,textarea,select").forEach(el=>{
+document.querySelectorAll("#trainer input,#trainer textarea,#trainer select").forEach(el=>{
 if(!el.id) return
 data[el.id]=el.value
 })
 
-document.querySelectorAll(".points").forEach(group=>{
+document.querySelectorAll("#trainer .points").forEach(group=>{
 const id=group.dataset.id
-const active=group.querySelectorAll(".active").length
-data[id]=active
+data[id]=group.querySelectorAll(".active").length
 })
 
 localStorage.setItem("trainerData",JSON.stringify(data))
-
 }
 
-/* load */
-
 function loadAll(){
-
 let data=JSON.parse(localStorage.getItem("trainerData")||"{}")
 
-document.querySelectorAll("input,textarea,select").forEach(el=>{
+document.querySelectorAll("#trainer input,#trainer textarea,#trainer select").forEach(el=>{
 if(!el.id) return
 if(data[el.id]!==undefined){
 el.value=data[el.id]
 }
 })
 
-document.querySelectorAll(".points").forEach(group=>{
-
+document.querySelectorAll("#trainer .points").forEach(group=>{
 const id=group.dataset.id
 const value=data[id]||0
 const boxes=group.querySelectorAll(".point")
 
 boxes.forEach(b=>b.classList.remove("active"))
-
 for(let i=0;i<value;i++){
 boxes[i].classList.add("active")
 }
-
 })
-
 }
 
-/* auto save */
-
-document.querySelectorAll("input,textarea,select").forEach(el=>{
+document.querySelectorAll("#trainer input,#trainer textarea,#trainer select").forEach(el=>{
 el.addEventListener("input",saveAll)
 })
 
+/* POKEMON SYSTEM */
+let currentPokemon=0
+
+function openPokemon(i){
+currentPokemon=i
+loadPokemon()
+show("pokemon")
+}
+
+function backToTeam(){
+show("team")
+updateTeam()
+}
+
+/* REMPLACE savePokemon PAR ÇA */
+
+function savePokemon(){
+
+let data={}
+
+document.querySelectorAll("#pokemon input,#pokemon textarea,#pokemon select").forEach(el=>{
+if(!el.id) return
+data[el.id]=el.value
+})
+
+document.querySelectorAll("#pokemon .points").forEach(group=>{
+const id=group.dataset.id
+const active=group.querySelectorAll(".active").length
+data[id]=active
+})
+
+localStorage.setItem("pokemon_"+currentPokemon, JSON.stringify(data))
+
+console.log("SAVE POKEMON", currentPokemon, data)
+}
+
+function updateTeam(){
+
+for(let i=0;i<6;i++){
+
+let data=JSON.parse(localStorage.getItem("pokemon_"+i)||"{}")
+
+let name=data.p_name || "Empty"
+let id=data.p_id || ""
+
+document.getElementById("name_"+i).textContent=name
+
+let img=document.getElementById("img_"+i)
+
+if(id){
+img.src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/"+id+".png"
+img.style.display="block"
+}else{
+img.style.display="none"
+}
+
+}
+}
+
+let POKEMON_FR = {}
+
+async function loadPokemonJSON(){
+let res = await fetch("pokedex.json")
+POKEMON_FR = await res.json()
+}
+
+function loadPokemon(){
+let data=JSON.parse(localStorage.getItem("pokemon_"+currentPokemon)||"{}")
+
+document.querySelectorAll("#pokemon input,#pokemon textarea,#pokemon select").forEach(el=>{
+el.value=data[el.id]||""
+})
+
+document.querySelectorAll("#pokemon .points").forEach(group=>{
+const id=group.dataset.id
+const value=data[id]||0
+const boxes=group.querySelectorAll(".point")
+
+boxes.forEach(b=>b.classList.remove("active"))
+for(let i=0;i<value;i++){
+boxes[i].classList.add("active")
+}
+})
+if(data.p_id){
+document.getElementById("p_sprite").src =
+"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/"+data.p_id+".png"
+}
+}
+
 /* dice */
-
 function roll(){
-
 const dice=["⚀","⚁","⚂","⚃","⚄","⚅"]
-
 let count=parseInt(document.getElementById("diceCount").value)
-
 let results=[]
 
 for(let i=0;i<count;i++){
-let result=dice[Math.floor(Math.random()*6)]
-results.push(result)
+results.push(dice[Math.floor(Math.random()*6)])
 }
 
 document.getElementById("diceResult").textContent=results.join(" ")
+}
+
+/* ================= MOVES ================= */
+
+let MOVES = []
+
+async function loadMovesJSON(){
+let res = await fetch("moves.json")
+MOVES = await res.json()
+}
+
+function loadMovesList(){
+let datalist = document.getElementById("movesList")
+datalist.innerHTML = ""
+
+MOVES.forEach(move=>{
+let option = document.createElement("option")
+option.value = move.name
+datalist.appendChild(option)
+})
+}
+
+function getMoveByName(name){
+return MOVES.find(m => m.name.toLowerCase() === name.toLowerCase())
+}
+
+function displayMove(move){
+
+if(!move) return
+
+document.getElementById("move_result").style.display = "block"
+
+document.getElementById("move_name").textContent = move.name
+document.getElementById("move_type").textContent = move.type
+document.getElementById("move_category").textContent = move.category
+document.getElementById("move_power").textContent = move.power
+document.getElementById("move_target").textContent = move.target
+document.getElementById("move_description").textContent = move.description
+document.getElementById("move_effect").textContent = move.effect
 
 }
 
-/* export */
+/* input listener */
+document.addEventListener("DOMContentLoaded", ()=>{
+let input = document.getElementById("move_search")
+if(input){
+input.addEventListener("input",(e)=>{
+let move = getMoveByName(e.target.value)
+displayMove(move)
+})
+}
+})
 
+/* import/export (inchangé) */
 function exportTrainer(){
-
 let data=localStorage.getItem("trainerData")
-
 let blob=new Blob([data],{type:"application/json"})
-
 let a=document.createElement("a")
-
 a.href=URL.createObjectURL(blob)
-
 a.download="pokerole_trainer.json"
-
 a.click()
-
 }
-
-/* import */
 
 function importTrainer(event){
-
 let file=event.target.files[0]
-
 let reader=new FileReader()
 
 reader.onload=function(){
-
 localStorage.setItem("trainerData",reader.result)
-
 loadAll()
-
 }
 
 reader.readAsText(file)
-
 }
 
-/* nature list */
-
+/* natures */
 const natures=[
 "Hardy","Lonely","Brave","Adamant","Naughty",
 "Bold","Docile","Relaxed","Impish","Lax",
@@ -488,16 +717,126 @@ const natures=[
 "Calm","Gentle","Sassy","Careful","Quirky"
 ]
 
-const select=document.getElementById("trainerNature")
-
+function fillSelect(id){
+let select=document.getElementById(id)
 natures.forEach(n=>{
 let option=document.createElement("option")
 option.value=n
 option.textContent=n
 select.appendChild(option)
 })
+}
 
+fillSelect("trainerNature")
+fillSelect("p_trainerNature")
+updateTeam()
 loadAll()
+
+document.querySelectorAll("#pokemon input, #pokemon textarea, #pokemon select").forEach(el=>{
+el.addEventListener("input", ()=>{
+savePokemon()
+})
+})
+
+let pNameInput = document.getElementById("p_name")
+
+pNameInput.addEventListener("input", (e)=>{
+handlePokemonName(e.target.value)
+})
+
+pNameInput.addEventListener("change", (e)=>{
+handlePokemonName(e.target.value)
+})
+
+/* helper pour remplir les points */
+function setPoints(id, value){
+
+let group = document.querySelector('#pokemon .points[data-id="'+id+'"]')
+
+if(!group) return
+
+let boxes = group.querySelectorAll(".point")
+
+boxes.forEach(b=>b.classList.remove("active"))
+
+for(let i=0;i<value;i++){
+if(boxes[i]) boxes[i].classList.add("active")
+}
+
+}
+
+let allPokemon = []
+let pokemonFRtoEN = {}
+
+function loadPokemonList(){
+
+let datalist = document.getElementById("pokemonList")
+
+datalist.innerHTML = ""
+
+Object.keys(POKEMON_FR).forEach(name=>{
+let option = document.createElement("option")
+option.value = name
+datalist.appendChild(option)
+})
+
+}
+
+async function handlePokemonName(value){
+
+let input = value.toLowerCase().trim()
+
+let name = POKEMON_FR[input] || input
+
+if(!name) return
+
+try{
+
+let res = await fetch("https://pokeapi.co/api/v2/pokemon/"+name)
+let data = await res.json()
+
+/* SPRITE */
+document.getElementById("p_sprite").src = data.sprites.front_default
+
+/* ID */
+document.getElementById("p_id").value = data.id
+
+/* HP */
+let hpStat = data.stats.find(s => s.stat.name === "hp")
+if(hpStat){
+document.getElementById("p_hp").value = hpStat.base_stat
+}
+
+/* Stats */
+let atk = data.stats.find(s => s.stat.name === "attack")?.base_stat || 0
+let def = data.stats.find(s => s.stat.name === "defense")?.base_stat || 0
+let spd = data.stats.find(s => s.stat.name === "speed")?.base_stat || 0
+
+function convert(stat){
+return Math.min(5, Math.floor(stat / 40))
+}
+
+setPoints("p_strength", convert(atk))
+setPoints("p_vitality", convert(def))
+setPoints("p_dexterity", convert(spd))
+
+savePokemon()
+updateTeam()
+
+}catch(e){
+console.log("Pokemon not found")
+}
+
+}
+
+async function init(){
+await loadPokemonJSON()
+await loadMovesJSON()
+loadPokemonList()
+loadMovesList()
+}
+
+init()
 
 </script>
 
