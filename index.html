@@ -14,6 +14,10 @@
 
 <style>
 
+*{
+box-sizing:border-box;
+}
+
 body{
 margin:0;
 font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -60,6 +64,9 @@ border-radius:16px;
 padding:16px;
 margin-bottom:15px;
 box-shadow:0 6px 20px rgba(0,0,0,0.2);
+position:relative;
+z-index:1;
+overflow:visible; /* IMPORTANT */
 }
 
 .statsCard{
@@ -167,17 +174,35 @@ color:white;
 
 input, select, textarea{
 width:100%;
+max-width:100%;
 padding:10px;
 border:none;
 border-radius:10px;
 margin-top:5px;
+outline:none;
+display:block;
+
 background:rgba(255,255,255,0.15);
 color:white;
-outline:none;
+backdrop-filter:blur(4px);
+
+transition:0.2s;
 }
 
+/* placeholder */
 input::placeholder, textarea::placeholder{
 color:rgba(255,255,255,0.6);
+}
+
+/* focus */
+input:focus, select:focus, textarea:focus{
+background:rgba(255,255,255,0.25);
+box-shadow:0 0 0 2px rgba(255,255,255,0.3);
+}
+
+input, textarea, select{
+-webkit-appearance:none;
+appearance:none;
 }
 
 label{
@@ -300,6 +325,41 @@ h3{
 margin-top:0;
 letter-spacing:0.5px;
 }
+
+.autocomplete-list{
+position:fixed;
+isolation:isolate;
+left:0;
+right:0;
+
+z-index:9999;
+
+background:white;
+color:black;
+
+max-height:200px;
+overflow-y:auto;
+
+border-radius:10px;
+box-shadow:0 10px 25px rgba(0,0,0,0.4);
+}
+
+.autocomplete-item{
+padding:10px;
+cursor:pointer;
+font-size:16px; /* IMPORTANT iOS */
+}
+
+.autocomplete-item:hover{
+background:#eee;
+}
+
+.container{
+overflow:visible;
+position:relative;
+z-index:0;
+}
+
 </style>
 
 </head>
@@ -482,8 +542,11 @@ letter-spacing:0.5px;
 </div>
 <h3>Pokémon</h3>
 
-<label>Name</label> 
-<input id="p_name" list="pokemonList">
+<label>Name</label>
+<div style="position:relative">
+<input id="p_name">
+<div id="pokemon_autocomplete" class="autocomplete-list"></div>
+</div>
 <datalist id="pokemonList"></datalist>
 <div class="sprite-row">
 <img id="p_sprite" style="width:96px;height:96px">
@@ -556,22 +619,26 @@ letter-spacing:0.5px;
 <h3>Moves</h3>
 
 <div class="moveRow">
-<input id="p_move1" list="movesList">
+<input id="p_move1">
+<div id="p_move1_autocomplete" class="autocomplete-list"></div>
 <button onclick="goToMove('p_move1')">➡</button>
 </div>
 
 <div class="moveRow">
-<input id="p_move2" list="movesList">
+<input id="p_move2">
+<div id="p_move2_autocomplete" class="autocomplete-list"></div>
 <button onclick="goToMove('p_move2')">➡</button>
 </div>
 
 <div class="moveRow">
-<input id="p_move3" list="movesList">
+<input id="p_move3">
+<div id="p_move3_autocomplete" class="autocomplete-list"></div>
 <button onclick="goToMove('p_move3')">➡</button>
 </div>
 
 <div class="moveRow">
-<input id="p_move4" list="movesList">
+<input id="p_move4">
+<div id="p_move4_autocomplete" class="autocomplete-list"></div>
 <button onclick="goToMove('p_move4')">➡</button>
 </div>
 <datalist id="movesList"></datalist>
@@ -583,7 +650,8 @@ letter-spacing:0.5px;
 <h3>Ability</h3>
 
 <div class="moveRow">
-<input id="p_ability" list="abilitiesList">
+<input id="p_ability">
+<div id="p_ability_autocomplete" class="autocomplete-list"></div>
 <button onclick="goToAbility()">➡</button>
 </div>
 
@@ -619,7 +687,10 @@ letter-spacing:0.5px;
 <h3>Recherche de Move</h3>
 
 <label>Nom du move</label>
-<input id="move_search" list="movesList">
+<div style="position:relative">
+<input id="move_search">
+<div id="moves_autocomplete" class="autocomplete-list"></div>
+</div>
 <datalist id="movesList"></datalist>
 
 </div>
@@ -653,7 +724,10 @@ letter-spacing:0.5px;
 <h3>Recherche d'Ability</h3>
 
 <label>Nom</label>
-<input id="ability_search" list="abilitiesList">
+<div style="position:relative">
+<input id="ability_search">
+<div id="abilities_autocomplete" class="autocomplete-list"></div>
+</div>
 <datalist id="abilitiesList"></datalist>
 <datalist id="pokemonAbilitiesList"></datalist>
 
@@ -678,8 +752,8 @@ letter-spacing:0.5px;
 <h3>Recherche Pokémon</h3>
 
 <label>Nom</label>
-<input id="pokedex_search" list="pokedexList">
-<datalist id="pokedexList"></datalist>
+<input id="pokedex_search">
+<div id="pokedex_autocomplete" class="autocomplete-list"></div>
 
 </div>
 
@@ -1135,22 +1209,6 @@ group.appendChild(box)
 async function loadPokedexJSON(){
 let res = await fetch("pokedex.json")
 POKEDEX = await res.json()
-}
-
-function loadPokedexList(){
-
-let datalist = document.getElementById("pokedexList")
-datalist.innerHTML = ""
-
-/* on utilise les noms FR */
-Object.keys(POKEMON_FR)
-.sort((a,b)=>a.localeCompare(b, "fr"))
-.forEach(frName=>{
-let option = document.createElement("option")
-option.value = frName.charAt(0).toUpperCase() + frName.slice(1)
-datalist.appendChild(option)
-})
-
 }
 
 function getPokemonByName(name){
@@ -1624,6 +1682,50 @@ document.getElementById("lockBtn").textContent = isLocked ? "Unlock" : "Lock"
 
 }
 
+function setupAutocomplete(inputId, list, containerId){
+
+let input = document.getElementById(inputId)
+let container = document.getElementById(containerId)
+
+input.addEventListener("input", ()=>{
+
+let value = input.value.toLowerCase()
+container.innerHTML = ""
+
+if(value.length < 2) return
+
+list
+.filter(item => item.toLowerCase().includes(value))
+.slice(0, 20)
+.forEach(item=>{
+
+let div = document.createElement("div")
+div.className = "autocomplete-item"
+div.textContent = item
+
+div.onclick = ()=>{
+input.value = item
+container.innerHTML = ""
+input.dispatchEvent(new Event("input"))
+input.blur() // 👈 ferme le clavier mobile
+}
+
+container.appendChild(div)
+
+})
+
+})
+
+
+}
+["p_move1","p_move2","p_move3","p_move4"].forEach(id=>{
+setupAutocomplete(
+id,
+MOVES.map(m=>m.name),
+id+"_autocomplete"
+)
+})
+
 async function init(){
 await loadPokemonFR()
 await loadPokemonJSON()
@@ -1634,8 +1736,31 @@ await loadPokedexJSON()
 loadPokemonList()
 loadMovesList()
 loadAbilitiesList()
-loadPokedexList()
-
+setupAutocomplete(
+"pokedex_search",
+Object.keys(POKEMON_FR).map(n => n.charAt(0).toUpperCase()+n.slice(1)),
+"pokedex_autocomplete"
+)
+setupAutocomplete(
+"p_name",
+Object.keys(POKEMON_FR).map(n => n.charAt(0).toUpperCase()+n.slice(1)),
+"pokemon_autocomplete"
+)
+setupAutocomplete(
+"move_search",
+MOVES.map(m=>m.name),
+"moves_autocomplete"
+)
+setupAutocomplete(
+"ability_search",
+ABILITIES.map(a=>a.name),
+"abilities_autocomplete"
+)
+setupAutocomplete(
+"p_ability",
+ABILITIES.map(a=>a.name),
+"p_ability_autocomplete"
+)
 initTrainerPoints()
 }
 
