@@ -2,8 +2,13 @@
 
 <html>
 <head>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#e64b2c">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
 <title>Pokerole Companion</title>
 
@@ -11,8 +16,8 @@
 
 body{
 margin:0;
-font-family:Arial;
-background:#e64b2c;
+font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+background:linear-gradient(180deg,#e64b2c,#c43a1f);
 color:white;
 }
 
@@ -31,10 +36,17 @@ padding:10px;
 }
 
 .nav button{
-background:none;
+background:rgba(255,255,255,0.1);
 border:none;
 color:white;
-font-size:16px;
+font-size:14px;
+padding:8px 10px;
+border-radius:10px;
+transition:0.2s;
+}
+
+.nav button:hover{
+background:rgba(255,255,255,0.25);
 }
 
 .container{
@@ -42,17 +54,20 @@ padding:15px;
 }
 
 .card{
-background:#f05a38;
-border-radius:15px;
-padding:15px;
+background:rgba(255,255,255,0.08);
+backdrop-filter:blur(8px);
+border-radius:16px;
+padding:16px;
 margin-bottom:15px;
+box-shadow:0 6px 20px rgba(0,0,0,0.2);
 }
 
 .statsCard{
-background:#18b7c5;
-border-radius:15px;
-padding:15px;
+background:linear-gradient(135deg,#18b7c5,#139aa6);
+border-radius:16px;
+padding:16px;
 margin-bottom:15px;
+box-shadow:0 6px 20px rgba(0,0,0,0.25);
 }
 
 .statRow{
@@ -69,16 +84,18 @@ gap:5px;
 }
 
 .point{
-width:26px;
-height:26px;
+width:24px;
+height:24px;
 border-radius:6px;
-background:#ffffff55;
-border:1px solid white;
+background:rgba(255,255,255,0.2);
+border:1px solid rgba(255,255,255,0.5);
 cursor:pointer;
+transition:0.2s;
 }
 
 .point.active{
 background:white;
+box-shadow:0 0 6px white;
 }
 
 /* Contest stats */
@@ -111,11 +128,22 @@ gap:10px;
 }
 
 .pokemon{
-background:#18b7c5;
-padding:15px;
-border-radius:12px;
+background:linear-gradient(135deg,#18b7c5,#0fa3b1);
+padding:12px;
+border-radius:14px;
 text-align:center;
 cursor:pointer;
+transition:0.2s;
+box-shadow:0 4px 12px rgba(0,0,0,0.2);
+}
+
+.pokemon:hover{
+transform:scale(1.03);
+}
+
+.pokemon img{
+display:block;
+margin:auto;
 }
 
 /* Dice */
@@ -137,20 +165,19 @@ margin-top:10px;
 color:white;
 }
 
-input, select{
+input, select, textarea{
 width:100%;
-padding:8px;
+padding:10px;
 border:none;
-border-radius:8px;
+border-radius:10px;
 margin-top:5px;
+background:rgba(255,255,255,0.15);
+color:white;
+outline:none;
 }
 
-textarea{
-width:100%;
-border:none;
-border-radius:8px;
-padding:8px;
-margin-top:5px;
+input::placeholder, textarea::placeholder{
+color:rgba(255,255,255,0.6);
 }
 
 label{
@@ -182,16 +209,20 @@ color:white;
 display:flex;
 gap:10px;
 align-items:center;
-margin-bottom:5px;
+margin-bottom:8px;
+}
+
+.moveRow input{
+flex:1;
 }
 
 .moveRow button{
-width:40px;
+width:45px;
 border:none;
-border-radius:8px;
+border-radius:10px;
 background:#18b7c5;
 color:white;
-cursor:pointer;
+font-size:16px;
 }
 
 #pokedex_stats div{
@@ -201,6 +232,74 @@ border-radius:6px;
 margin-bottom:4px;
 }
 
+.sprites{
+display:flex;
+justify-content:center;
+align-items:center;
+gap:6px;
+margin-bottom:8px;
+flex-wrap:nowrap;
+}
+
+.sprites img{
+width:64px;
+height:64px;
+image-rendering: pixelated;
+}
+
+@media (max-width:600px){
+
+.sprites img{
+width:48px;
+height:48px;
+}
+
+.sprites img:last-child{
+filter: drop-shadow(0 0 4px gold);
+}
+
+.nav{
+flex-wrap:wrap;
+gap:5px;
+}
+
+.nav button{
+font-size:12px;
+padding:6px;
+}
+
+.team{
+grid-template-columns:1fr;
+}
+
+}
+
+.sprite-row{
+display:flex;
+justify-content:center;
+align-items:center;
+gap:12px;
+flex-wrap:wrap;
+}
+
+.sprite-row img{
+max-width:96px;
+height:auto;
+}
+
+#pokemon.locked{
+opacity:0.9;
+}
+
+.pokemon.active{
+outline:2px solid white;
+box-shadow:0 0 10px rgba(255,255,255,0.6);
+}
+
+h3{
+margin-top:0;
+letter-spacing:0.5px;
+}
 </style>
 
 </head>
@@ -315,7 +414,7 @@ margin-bottom:4px;
 <div class="team">
 
 <div class="pokemon" onclick="openPokemon(0)" id="slot_0">
-  <div>
+  <div class="sprites">
     <img id="img_0" style="width:64px;height:64px">
     <img id="img_shiny_0" style="width:64px;height:64px">
   </div>
@@ -323,7 +422,7 @@ margin-bottom:4px;
 </div>
 
 <div class="pokemon" onclick="openPokemon(1)" id="slot_1">
-  <div>
+  <div class="sprites">
     <img id="img_1" style="width:64px;height:64px">
     <img id="img_shiny_1" style="width:64px;height:64px">
   </div>
@@ -331,7 +430,7 @@ margin-bottom:4px;
 </div>
 
 <div class="pokemon" onclick="openPokemon(2)" id="slot_2">
-  <div>
+  <div class="sprites">
     <img id="img_2" style="width:64px;height:64px">
     <img id="img_shiny_2" style="width:64px;height:64px">
   </div>
@@ -339,7 +438,7 @@ margin-bottom:4px;
 </div>
 
 <div class="pokemon" onclick="openPokemon(3)" id="slot_3">
-  <div>
+  <div class="sprites">
     <img id="img_3" style="width:64px;height:64px">
     <img id="img_shiny_3" style="width:64px;height:64px">
   </div>
@@ -347,7 +446,7 @@ margin-bottom:4px;
 </div>
 
 <div class="pokemon" onclick="openPokemon(4)" id="slot_4">
-  <div>
+  <div class="sprites">
     <img id="img_4" style="width:64px;height:64px">
     <img id="img_shiny_4" style="width:64px;height:64px">
   </div>
@@ -355,7 +454,7 @@ margin-bottom:4px;
 </div>
 
 <div class="pokemon" onclick="openPokemon(5)" id="slot_5">
-  <div>
+  <div class="sprites">
     <img id="img_5" style="width:64px;height:64px">
     <img id="img_shiny_5" style="width:64px;height:64px">
   </div>
@@ -363,19 +462,6 @@ margin-bottom:4px;
 </div>
 
 </div></div>
-<div class="pokemon" onclick="openPokemon(4)" id="slot_4">
-<img id="img_4" style="width:64px;height:64px">
-<img id="img_shiny_4" style="width:64px;height:64px">
-</div>
-<div id="name_4">Empty</div>
-</div>
-<div class="pokemon" onclick="openPokemon(5)" id="slot_5">
-<img id="img_5" style="width:64px;height:64px">
-<img id="img_shiny_5" style="width:64px;height:64px">
-</div>
-<div id="name_5">Empty</div>
-</div>
-</div>
 
 </div>
 
@@ -389,12 +475,17 @@ margin-bottom:4px;
 
 <div class="card">
 
+<div class="toolButtons">
+<button onclick="backToTeam()">⬅ Back</button>
+<button onclick="resetPokemon()">Reset</button>
+<button onclick="toggleLock()" id="lockBtn">Lock</button>
+</div>
 <h3>Pokémon</h3>
 
 <label>Name</label> 
 <input id="p_name" list="pokemonList">
 <datalist id="pokemonList"></datalist>
-<div style="display:flex;justify-content:center;gap:10px">
+<div class="sprite-row">
 <img id="p_sprite" style="width:96px;height:96px">
 <img id="p_sprite_shiny" style="width:96px;height:96px">
 </div>
@@ -406,8 +497,6 @@ margin-bottom:4px;
 <label>Confidence</label> <input id="p_confidence" type="number">
 <label>Concept</label>
 <textarea id="p_concept"></textarea>
-
-<button onclick="backToTeam()">⬅ Back</button>
 
 </div>
 
@@ -598,7 +687,7 @@ margin-bottom:4px;
 
 <h3 id="pokedex_name"></h3>
 
-<div style="display:flex;justify-content:center;gap:10px">
+<div class="sprite-row">
 <img id="pokedex_sprite" style="width:96px;height:96px">
 <img id="pokedex_sprite_shiny" style="width:96px;height:96px">
 </div>
@@ -755,6 +844,8 @@ el.addEventListener("input",saveAll)
 let currentPokemon=0
 
 function openPokemon(i){
+document.querySelectorAll(".pokemon").forEach(p=>p.classList.remove("active"))
+document.getElementById("slot_"+i).classList.add("active")
 currentPokemon=i
 initPokemonPoints()
 loadPokemon()
@@ -858,6 +949,21 @@ if(name){
 let en = POKEMON_FR[normalize(name)] || name
 updatePokemonDataFromPokedex(en)
 }
+
+let savedLock = localStorage.getItem("pokemon_lock_"+currentPokemon) === "true"
+isLocked = savedLock
+
+document.getElementById("pokemon").classList.toggle("locked", isLocked)
+
+document.querySelectorAll("#pokemon input, #pokemon textarea, #pokemon select").forEach(el=>{
+el.disabled = isLocked
+})
+
+document.querySelectorAll("#pokemon .point").forEach(p=>{
+p.style.pointerEvents = isLocked ? "none" : "auto"
+})
+
+document.getElementById("lockBtn").textContent = isLocked ? "Unlock" : "Lock"
 }
 
 /* dice */
@@ -1242,9 +1348,17 @@ fillSelect("p_trainerNature")
 updateTeam()
 loadAll()
 
+let saveTimer = null
+
 document.querySelectorAll("#pokemon input, #pokemon textarea, #pokemon select").forEach(el=>{
 el.addEventListener("input", ()=>{
+
+clearTimeout(saveTimer)
+
+saveTimer = setTimeout(()=>{
 savePokemon()
+}, 300)
+
 })
 })
 
@@ -1392,11 +1506,18 @@ displayPokemonAbility()
 
 let stats = p.stats || {}
 
-setDynamicPoints("p_strength", stats.strength?.value || 0, stats.strength?.max || 5)
-setDynamicPoints("p_dexterity", stats.dexterity?.value || 0, stats.dexterity?.max || 5)
-setDynamicPoints("p_vitality", stats.vitality?.value || 0, stats.vitality?.max || 5)
-setDynamicPoints("p_special", stats.special?.value || 0, stats.special?.max || 5)
-setDynamicPoints("p_insight", stats.insight?.value || 0, stats.insight?.max || 5)
+// récup save
+let saved = JSON.parse(localStorage.getItem("pokemon_"+currentPokemon) || "{}")
+
+function getStatValue(id, defaultValue){
+return saved[id] !== undefined ? saved[id] : defaultValue
+}
+
+setDynamicPoints("p_strength", getStatValue("p_strength", stats.strength?.value || 0), stats.strength?.max || 5)
+setDynamicPoints("p_dexterity", getStatValue("p_dexterity", stats.dexterity?.value || 0), stats.dexterity?.max || 5)
+setDynamicPoints("p_vitality", getStatValue("p_vitality", stats.vitality?.value || 0), stats.vitality?.max || 5)
+setDynamicPoints("p_special", getStatValue("p_special", stats.special?.value || 0), stats.special?.max || 5)
+setDynamicPoints("p_insight", getStatValue("p_insight", stats.insight?.value || 0), stats.insight?.max || 5)
 }
 
 function goToMove(inputId){
@@ -1434,6 +1555,72 @@ document.getElementById("ability_search").value = value
 
 let ability = getAbilityByName(value)
 displayAbility(ability)
+
+}
+
+function resetPokemon(){
+
+if(isLocked){
+alert("Pokémon verrouillé 🔒")
+return
+}
+
+if(Object.keys(data).length > 2){
+if(!confirm("Attention, des données existent. Continuer ?")) return
+}
+
+if(!confirm("Supprimer ce Pokémon ?")) return
+
+// clear inputs
+document.querySelectorAll("#pokemon input, #pokemon textarea").forEach(el=>{
+el.value = ""
+})
+
+// clear selects
+document.querySelectorAll("#pokemon select").forEach(el=>{
+el.selectedIndex = 0
+})
+
+// reset points
+document.querySelectorAll("#pokemon .points").forEach(group=>{
+let boxes = group.querySelectorAll(".point")
+boxes.forEach(b=>b.classList.remove("active"))
+})
+
+// reset sprites
+document.getElementById("p_sprite").src = ""
+document.getElementById("p_sprite_shiny").src = ""
+
+// remove storage
+localStorage.removeItem("pokemon_"+currentPokemon)
+
+// update UI
+updateTeam()
+
+}
+
+let isLocked = false
+
+function toggleLock(){
+
+isLocked = !isLocked
+
+document.getElementById("pokemon").classList.toggle("locked", isLocked)
+
+localStorage.setItem("pokemon_lock_"+currentPokemon, isLocked)
+
+// inputs
+document.querySelectorAll("#pokemon input, #pokemon textarea, #pokemon select").forEach(el=>{
+el.disabled = isLocked
+})
+
+// points (important)
+document.querySelectorAll("#pokemon .point").forEach(p=>{
+p.style.pointerEvents = isLocked ? "none" : "auto"
+})
+
+// bouton texte
+document.getElementById("lockBtn").textContent = isLocked ? "Unlock" : "Lock"
 
 }
 
