@@ -327,8 +327,8 @@ letter-spacing:0.5px;
 }
 
 .autocomplete-list{
-position:fixed;
-isolation:isolate;
+position:absolute;
+top:100%;
 left:0;
 right:0;
 
@@ -371,9 +371,9 @@ z-index:0;
 <div class="nav">
 <button onclick="show('trainer')">Dresseur</button>
 <button onclick="show('team')">Team</button>
-<button onclick="show('dice')">Dice</button>
-<button onclick="show('moves')">Moves</button>
-<button onclick="show('abilities')">Abilities</button>
+<button onclick="show('dice')">Dé</button>
+<button onclick="show('moves')">Attaques</button>
+<button onclick="show('abilities')">Abilités</button>
 <button onclick="show('pokedex')">Pokedex</button>
 </div>
 
@@ -648,13 +648,15 @@ z-index:0;
 
 <h3>Ability</h3>
 
+<div id="pokemon_ability_display" style="margin-bottom:10px"></div>
+
 <div class="moveRow">
 <input id="p_ability">
 <div id="p_ability_autocomplete" class="autocomplete-list"></div>
-<button onclick="goToAbility()">➡</button>
 </div>
 
 </div>
+
 <div class="card" id="pokemon_move_display" style="display:none"></div>
 
 </div>
@@ -713,7 +715,6 @@ z-index:0;
 <!-- ABILITIES -->
 
 <div id="abilities" style="display:none">
-<button onclick="goBack()">⬅ Retour</button>
 <div class="card">
 <h3>Recherche d'Ability</h3>
 
@@ -974,11 +975,6 @@ if(shiny) shiny.style.display="none"
 }
 
 let POKEDEX = []
-
-async function loadPokemonJSON(){
-let res = await fetch("pokedex.json")
-POKEDEX = await res.json()
-}
 
 function loadPokemon(){
 let data=JSON.parse(localStorage.getItem("pokemon_"+currentPokemon)||"{}")
@@ -1271,8 +1267,6 @@ container.style.display = "none"
 
 let ids = ["p_move1","p_move2","p_move3","p_move4"]
 
-if(!Array.isArray(ids)) return
-
 ids.forEach(id=>{
 
 let input = document.getElementById(id)
@@ -1289,7 +1283,8 @@ if(!move) return
 
 container.style.display = "block"
 
-container.innerHTML += `
+/* ✅ FIX : plus d'accumulation */
+container.innerHTML = `
 <div style="margin-bottom:10px">
 <b>${move.name}</b><br>
 Type: ${move.type} | Power: ${move.power}<br>
@@ -1308,7 +1303,9 @@ ${move.effect}
 function displayPokemonAbility(){
 
 let input = document.getElementById("p_ability")
-if(!input) return
+let div = document.getElementById("pokemon_ability_display") // ✅ FIX
+
+if(!input || !div) return
 
 input.oninput = null
 
@@ -1459,7 +1456,13 @@ async function handlePokemonName(value){
     if(value.length < 2) return
 
 let input = normalize(value)
-let name = POKEMON_FR[input] || input
+let inputNorm = normalize(value)
+
+/* chercher correspondance FR */
+let matchFR = Object.keys(POKEMON_FR).find(fr => normalize(fr).startsWith(inputNorm))
+
+/* convertir en EN */
+let name = matchFR ? POKEMON_FR[matchFR] : inputNorm
 
 if(!name) return
 
@@ -1573,32 +1576,15 @@ let move = getMoveByName(value)
 displayMove(move)
 
 }
-
-function goToAbility(){
-
-let value = document.getElementById("p_ability").value
-if(!value) return
-
-LAST_PAGE = {
-page: "pokemon",
-slot: currentPokemon
-}
-
-show("abilities")
-
-document.getElementById("ability_search").value = value
-
-let ability = getAbilityByName(value)
-displayAbility(ability)
-
-}
-
 function resetPokemon(){
 
 if(isLocked){
 alert("Pokémon verrouillé 🔒")
 return
 }
+
+/* ✅ FIX : on récupère bien les données */
+let data = JSON.parse(localStorage.getItem("pokemon_"+currentPokemon) || "{}")
 
 if(Object.keys(data).length > 2){
 if(!confirm("Attention, des données existent. Continuer ?")) return
@@ -1666,7 +1652,7 @@ let container = document.getElementById(containerId)
 
 input.addEventListener("input", ()=>{
 
-let value = input.value.toLowerCase()
+let value = normalize(input.value)
 container.innerHTML = ""
 
 if(value.length < 2){
@@ -1675,7 +1661,7 @@ return
 }
 
 let results = list
-.filter(item => item.toLowerCase().includes(value))
+.filter(item => normalize(item).includes(value))
 .slice(0, 20)
 
 if(results.length === 0){
@@ -1724,7 +1710,6 @@ e.preventDefault()
 
 async function init(){
 await loadPokemonFR()
-await loadPokemonJSON()
 await loadMovesJSON()
 await loadAbilitiesJSON()
 await loadPokedexJSON()
