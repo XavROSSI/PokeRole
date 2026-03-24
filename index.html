@@ -178,11 +178,34 @@ background:#18b7c5;
 color:white;
 }
 
+.moveRow{
+display:flex;
+gap:10px;
+align-items:center;
+margin-bottom:5px;
+}
+
+.moveRow button{
+width:40px;
+border:none;
+border-radius:8px;
+background:#18b7c5;
+color:white;
+cursor:pointer;
+}
+
+#pokedex_stats div{
+background:#ffffff22;
+padding:6px;
+border-radius:6px;
+margin-bottom:4px;
+}
+
 </style>
 
 </head>
 
-<body>
+<body autocomplete="off">
 
 <div class="header">Pokerole Companion</div>
 
@@ -291,22 +314,43 @@ color:white;
 
 <div class="team">
 <div class="pokemon" onclick="openPokemon(0)" id="slot_0">
-<img id="img_0" style="width:64px;height:64px"><div id="name_0">Empty</div>
+<div>
+<img id="img_0" style="width:64px;height:64px">
+<img id="img_shiny_0" style="width:64px;height:64px">
+</div>
+<div id="name_0">Empty</div>
 </div>
 <div class="pokemon" onclick="openPokemon(1)" id="slot_1">
-<img id="img_1" style="width:64px;height:64px"><div id="name_1">Empty</div>
+<div>
+<img id="img_1" style="width:64px;height:64px">
+<img id="img_shiny_1" style="width:64px;height:64px">
+</div>
+<div id="name_1">Empty</div>
 </div>
 <div class="pokemon" onclick="openPokemon(2)" id="slot_2">
-<img id="img_2" style="width:64px;height:64px"><div id="name_2">Empty</div>
+<div>
+<img id="img_2" style="width:64px;height:64px">
+<img id="img_shiny_2" style="width:64px;height:64px">
+</div>
+<div id="name_2">Empty</div>
 </div>
 <div class="pokemon" onclick="openPokemon(3)" id="slot_3">
-<img id="img_3" style="width:64px;height:64px"><div id="name_3">Empty</div>
+<img id="img_3" style="width:64px;height:64px">
+<img id="img_shiny_3" style="width:64px;height:64px">
+</div>
+<div id="name_3">Empty</div>
 </div>
 <div class="pokemon" onclick="openPokemon(4)" id="slot_4">
-<img id="img_4" style="width:64px;height:64px"><div id="name_4">Empty</div>
+<img id="img_4" style="width:64px;height:64px">
+<img id="img_shiny_4" style="width:64px;height:64px">
+</div>
+<div id="name_4">Empty</div>
 </div>
 <div class="pokemon" onclick="openPokemon(5)" id="slot_5">
-<img id="img_5" style="width:64px;height:64px"><div id="name_5">Empty</div>
+<img id="img_5" style="width:64px;height:64px">
+<img id="img_shiny_5" style="width:64px;height:64px">
+</div>
+<div id="name_5">Empty</div>
 </div>
 </div>
 
@@ -327,7 +371,10 @@ color:white;
 <label>Name</label> 
 <input id="p_name" list="pokemonList">
 <datalist id="pokemonList"></datalist>
-<img id="p_sprite" style="width:96px;height:96px;display:block;margin:auto">
+<div style="display:flex;justify-content:center;gap:10px">
+<img id="p_sprite" style="width:96px;height:96px">
+<img id="p_sprite_shiny" style="width:96px;height:96px">
+</div>
 <label>Pokédex ID</label> <input id="p_id" type="number">
 <label>Nature</label> <select id="p_trainerNature"></select>
 <label>Money</label> <input id="p_money">
@@ -348,6 +395,7 @@ color:white;
 <div class="statRow"><span>Strength</span><div class="points" data-id="p_strength"></div></div>
 <div class="statRow"><span>Dexterity</span><div class="points" data-id="p_dexterity"></div></div>
 <div class="statRow"><span>Vitality</span><div class="points" data-id="p_vitality"></div></div>
+<div class="statRow"><span>Special</span><div class="points" data-id="p_special"></div></div>
 <div class="statRow"><span>Insight</span><div class="points" data-id="p_insight"></div></div>
 
 </div>
@@ -391,6 +439,45 @@ color:white;
 <div class="contestRow clever"><span>Clever</span><div class="points" data-id="p_clever"></div></div>
 
 </div>
+<div class="card">
+
+<h3>Moves</h3>
+
+<div class="moveRow">
+<input id="p_move1" list="movesList">
+<button onclick="goToMove('p_move1')">➡</button>
+</div>
+
+<div class="moveRow">
+<input id="p_move2" list="movesList">
+<button onclick="goToMove('p_move2')">➡</button>
+</div>
+
+<div class="moveRow">
+<input id="p_move3" list="movesList">
+<button onclick="goToMove('p_move3')">➡</button>
+</div>
+
+<div class="moveRow">
+<input id="p_move4" list="movesList">
+<button onclick="goToMove('p_move4')">➡</button>
+</div>
+<datalist id="movesList"></datalist>
+
+</div>
+
+<div class="card">
+
+<h3>Ability</h3>
+
+<div class="moveRow">
+<input id="p_ability" list="abilitiesList">
+<button onclick="goToAbility()">➡</button>
+</div>
+
+</div>
+<div class="card" id="pokemon_move_display" style="display:none"></div>
+<div class="card" id="pokemon_ability_display" style="display:none"></div>
 
 </div>
 
@@ -415,7 +502,7 @@ color:white;
 <!-- MOVES -->
 
 <div id="moves" style="display:none">
-
+<button onclick="goBack()">⬅ Retour</button>
 <div class="card">
 <h3>Recherche de Move</h3>
 
@@ -433,6 +520,8 @@ color:white;
 <p><b>Catégorie :</b> <span id="move_category"></span></p>
 <p><b>Puissance :</b> <span id="move_power"></span></p>
 <p><b>Cible :</b> <span id="move_target"></span></p>
+<p><b>Accuracy :</b> <span id="move_accuracy"></span></p>
+<p><b>Damage :</b> <span id="move_damage"></span></p>
 
 <p><b>Description :</b></p>
 <p id="move_description"></p>
@@ -447,13 +536,14 @@ color:white;
 <!-- ABILITIES -->
 
 <div id="abilities" style="display:none">
-
+<button onclick="goBack()">⬅ Retour</button>
 <div class="card">
 <h3>Recherche d'Ability</h3>
 
 <label>Nom</label>
 <input id="ability_search" list="abilitiesList">
 <datalist id="abilitiesList"></datalist>
+<datalist id="pokemonAbilitiesList"></datalist>
 
 </div>
 
@@ -485,7 +575,10 @@ color:white;
 
 <h3 id="pokedex_name"></h3>
 
-<img id="pokedex_sprite" style="width:96px;height:96px;display:block;margin:auto">
+<div style="display:flex;justify-content:center;gap:10px">
+<img id="pokedex_sprite" style="width:96px;height:96px">
+<img id="pokedex_sprite_shiny" style="width:96px;height:96px">
+</div>
 
 <p><b>ID :</b> <span id="pokedex_id"></span></p>
 <p><b>Types :</b> <span id="pokedex_types"></span></p>
@@ -500,6 +593,15 @@ color:white;
 </div>
 
 <script>
+    
+let CURRENT_POKEMON = null
+let POKEMON_FR = {}
+let LAST_PAGE = null
+
+async function loadPokemonFR(){
+let res = await fetch("pokemon_fr.json")
+POKEMON_FR = await res.json()
+}
 
 /* navigation */
 function show(page){
@@ -509,41 +611,79 @@ document.getElementById(id).style.display="none"
 document.getElementById(page).style.display="block"
 }
 
-/* points (inchangé) */
-document.querySelectorAll(".points").forEach(group=>{
+function initTrainerPoints(){
+
+document.querySelectorAll("#trainer .points").forEach(group=>{
+
+group.innerHTML = ""
+
 for(let i=0;i<5;i++){
-let box=document.createElement("div")
-box.className="point"
-group.appendChild(box)
-}
-})
+let box = document.createElement("div")
+box.className = "point"
 
-document.querySelectorAll(".points").forEach(group=>{
-const boxes=group.querySelectorAll(".point")
+box.addEventListener("click", ()=>{
 
-boxes.forEach((box,index)=>{
-box.addEventListener("click",()=>{
-let value=index+1
+let boxes = group.querySelectorAll(".point")
+let index = [...boxes].indexOf(box)
+let value = index + 1
 
-if(box.classList.contains("active") && index===0){
-value=0
+if(box.classList.contains("active") && index === 0){
+value = 0
 }
 
 boxes.forEach(b=>b.classList.remove("active"))
 
 for(let i=0;i<value;i++){
-boxes[i].classList.add("active")
+    if(boxes[i]) boxes[i].classList.add("active")
 }
 
-if(group.closest("#pokemon")){
-savePokemon()
-}else if(group.closest("#trainer")){
 saveAll()
+
+})
+
+group.appendChild(box)
 }
 
 })
+
+}
+
+function initPokemonPoints(){
+
+document.querySelectorAll("#pokemon .points").forEach(group=>{
+
+group.innerHTML = ""
+
+for(let i=0;i<5;i++){
+let box = document.createElement("div")
+box.className = "point"
+
+box.addEventListener("click", ()=>{
+
+let boxes = group.querySelectorAll(".point")
+let index = [...boxes].indexOf(box)
+let value = index + 1
+
+if(box.classList.contains("active") && index === 0){
+value = 0
+}
+
+boxes.forEach(b=>b.classList.remove("active"))
+
+for(let i=0;i<value;i++){
+if(boxes[i]) boxes[i].classList.add("active")
+}
+
+savePokemon()
+
 })
+
+group.appendChild(box)
+}
+
 })
+
+}
 
 /* TRAINER SAVE (INCHANGÉ) */
 function saveAll(){
@@ -579,7 +719,7 @@ const boxes=group.querySelectorAll(".point")
 
 boxes.forEach(b=>b.classList.remove("active"))
 for(let i=0;i<value;i++){
-boxes[i].classList.add("active")
+    if(boxes[i]) boxes[i].classList.add("active")
 }
 })
 }
@@ -593,6 +733,7 @@ let currentPokemon=0
 
 function openPokemon(i){
 currentPokemon=i
+initPokemonPoints()
 loadPokemon()
 show("pokemon")
 }
@@ -636,22 +777,33 @@ let id=data.p_id || ""
 document.getElementById("name_"+i).textContent=name
 
 let img=document.getElementById("img_"+i)
+let shiny=document.getElementById("img_shiny_"+i)
 
 if(id){
+
 img.src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/"+id+".png"
 img.style.display="block"
+
+if(shiny){
+shiny.src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/"+id+".png"
+shiny.style.display="block"
+}
+
 }else{
-img.style.display="none"
+
+if(img) img.style.display="none"
+if(shiny) shiny.style.display="none"
+
 }
 
 }
 }
 
-let POKEMON_FR = {}
+let POKEDEX = []
 
 async function loadPokemonJSON(){
 let res = await fetch("pokedex.json")
-POKEMON_FR = await res.json()
+POKEDEX = await res.json()
 }
 
 function loadPokemon(){
@@ -668,12 +820,20 @@ const boxes=group.querySelectorAll(".point")
 
 boxes.forEach(b=>b.classList.remove("active"))
 for(let i=0;i<value;i++){
-boxes[i].classList.add("active")
+    if(boxes[i]) boxes[i].classList.add("active")
 }
 })
 if(data.p_id){
 document.getElementById("p_sprite").src =
 "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/"+data.p_id+".png"
+document.getElementById("p_sprite_shiny").src =
+"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/"+data.p_id+".png"
+}
+
+let name = data.p_name
+if(name){
+let en = POKEMON_FR[normalize(name)] || name
+updatePokemonDataFromPokedex(en)
 }
 }
 
@@ -728,8 +888,34 @@ document.getElementById("move_target").textContent = move.target
 document.getElementById("move_description").textContent = move.description
 document.getElementById("move_effect").textContent = move.effect
 
+/* ===== ACCURACY ===== */
+let accuracy = move.accuracy || {}
+
+let accParts = []
+
+if(accuracy.attr){
+accParts.push(capitalize(accuracy.attr))
 }
 
+if(accuracy.skill){
+accParts.push(capitalize(accuracy.skill))
+}
+
+document.getElementById("move_accuracy").textContent =
+accParts.length ? accParts.join(" + ") : "-"
+
+/* ===== DAMAGE ===== */
+let damage = move.damage || {}
+
+document.getElementById("move_damage").textContent =
+damage.mod ? capitalize(damage.mod) : "-"
+
+}
+
+function capitalize(str){
+if(!str) return ""
+return str.charAt(0).toUpperCase() + str.slice(1)
+}
 /* ================= ABILITIES ================= */
 
 let ABILITIES = []
@@ -776,9 +962,46 @@ displayAbility(a)
 }
 })
 
-/* ================= POKEDEX ================= */
+function setDynamicPoints(statId, value, max){
 
-let POKEDEX = []
+let group = document.querySelector('#pokemon .points[data-id="'+statId+'"]')
+if(!group) return
+
+group.innerHTML = "" // reset
+
+for(let i=0;i<max;i++){
+let box = document.createElement("div")
+box.className = "point"
+
+if(i < value){
+box.classList.add("active")
+}
+
+box.addEventListener("click", ()=>{
+
+let newValue = i+1
+
+if(box.classList.contains("active") && i===0){
+newValue = 0
+}
+
+let boxes = group.querySelectorAll(".point")
+boxes.forEach(b=>b.classList.remove("active"))
+
+for(let j=0;j<newValue;j++){
+    if(boxes[j]) boxes[j].classList.add("active")
+}
+
+savePokemon()
+
+})
+
+group.appendChild(box)
+}
+
+}
+
+/* ================= POKEDEX ================= */
 
 async function loadPokedexJSON(){
 let res = await fetch("pokedex.json")
@@ -786,14 +1009,19 @@ POKEDEX = await res.json()
 }
 
 function loadPokedexList(){
+
 let datalist = document.getElementById("pokedexList")
 datalist.innerHTML = ""
 
-POKEDEX.forEach(p=>{
+/* on utilise les noms FR */
+Object.keys(POKEMON_FR)
+.sort((a,b)=>a.localeCompare(b, "fr"))
+.forEach(frName=>{
 let option = document.createElement("option")
-option.value = p.name
+option.value = frName.charAt(0).toUpperCase() + frName.slice(1)
 datalist.appendChild(option)
 })
+
 }
 
 function getPokemonByName(name){
@@ -806,17 +1034,43 @@ if(!p) return
 
 document.getElementById("pokedex_result").style.display = "block"
 
-document.getElementById("pokedex_name").textContent = p.name
-document.getElementById("pokedex_id").textContent = p.id
+/* NOM FR */
+let frName = Object.keys(POKEMON_FR).find(key => POKEMON_FR[key] === p.name)
 
+document.getElementById("pokedex_name").textContent =
+(frName ? frName.charAt(0).toUpperCase()+frName.slice(1) : p.name)
+
+/* ID */
+document.getElementById("pokedex_id").textContent = p.pokedexId
+
+/* TYPES */
 document.getElementById("pokedex_types").textContent =
-(p.types || []).join(", ")
+(p.types || []).join(" / ")
 
-document.getElementById("pokedex_stats").textContent =
-JSON.stringify(p.stats || {})
-
+/* SPRITE */
 document.getElementById("pokedex_sprite").src =
-"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/"+p.id+".png"
+"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/"+p.pokedexId+".png"
+document.getElementById("pokedex_sprite_shiny").src =
+"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/"+p.pokedexId+".png"
+
+/* STATS FORMAT */
+let stats = p.stats || {}
+
+function statLine(icon, name, stat){
+return `
+<div>
+${icon} ${name} : 
+<b>${stat?.value || 0}</b> / ${stat?.max || 0}
+</div>`
+}
+
+document.getElementById("pokedex_stats").innerHTML = `
+${statLine("💪","Strength",stats.strength)}
+${statLine("⚡","Dexterity",stats.dexterity)}
+${statLine("🛡","Vitality",stats.vitality)}
+${statLine("🔮","Special",stats.special)}
+${statLine("🧠","Insight",stats.insight)}
+`
 
 }
 
@@ -824,11 +1078,89 @@ document.addEventListener("DOMContentLoaded", ()=>{
 let input = document.getElementById("pokedex_search")
 if(input){
 input.addEventListener("input",(e)=>{
-let p = getPokemonByName(e.target.value)
+
+let fr = normalize(e.target.value)
+let en = POKEMON_FR[fr] || fr
+
+let p = getPokemonByName(en)
 displayPokedex(p)
+
 })
 }
 })
+
+/*---------------------------------------------------------*/
+/* ================= DISPLAY MOVES IN POKEMON ================= */
+
+function displayPokemonMoves(){
+
+if(!Array.isArray(MOVES)) return
+
+let container = document.getElementById("pokemon_move_display")
+if(!container) return
+
+container.innerHTML = ""
+container.style.display = "none"
+
+let ids = ["p_move1","p_move2","p_move3","p_move4"]
+
+if(!Array.isArray(ids)) return
+
+ids.forEach(id=>{
+
+let input = document.getElementById(id)
+if(!input) return
+
+input.oninput = null
+
+input.oninput = ()=>{
+
+if(!input.value) return
+
+let move = getMoveByName(input.value)
+if(!move) return
+
+container.style.display = "block"
+
+container.innerHTML += `
+<div style="margin-bottom:10px">
+<b>${move.name}</b><br>
+Type: ${move.type} | Power: ${move.power}<br>
+${move.effect}
+</div>
+`
+
+}
+
+})
+
+}
+
+/* ================= DISPLAY ABILITY ================= */
+
+function displayPokemonAbility(){
+
+let input = document.getElementById("p_ability")
+if(!input) return
+
+input.oninput = null
+
+input.oninput = ()=>{
+
+let a = getAbilityByName(input.value)
+if(!a) return
+
+let div = document.getElementById("pokemon_ability_display")
+div.style.display = "block"
+
+div.innerHTML = `
+<b>${a.name}</b><br><br>
+${a.description || a.system?.description || ""}
+`
+
+}
+
+}
 
 /* input listener */
 document.addEventListener("DOMContentLoaded", ()=>{
@@ -895,12 +1227,16 @@ savePokemon()
 
 let pNameInput = document.getElementById("p_name")
 
-pNameInput.addEventListener("input", (e)=>{
-handlePokemonName(e.target.value)
-})
+let debounceTimer = null
 
-pNameInput.addEventListener("change", (e)=>{
+pNameInput.addEventListener("input", (e)=>{
+
+clearTimeout(debounceTimer)
+
+debounceTimer = setTimeout(()=>{
 handlePokemonName(e.target.value)
+}, 400) // 400ms après la dernière frappe
+
 })
 
 /* helper pour remplir les points */
@@ -926,21 +1262,31 @@ let pokemonFRtoEN = {}
 function loadPokemonList(){
 
 let datalist = document.getElementById("pokemonList")
-
 datalist.innerHTML = ""
 
-Object.keys(POKEMON_FR).forEach(name=>{
+/* on parcourt les noms FR */
+Object.keys(POKEMON_FR)
+.sort((a,b)=>a.localeCompare(b, "fr"))
+.forEach(frName=>{
 let option = document.createElement("option")
-option.value = name
+option.value = frName.charAt(0).toUpperCase() + frName.slice(1)
 datalist.appendChild(option)
 })
 
 }
 
+function normalize(str){
+return str
+.toLowerCase()
+.normalize("NFD")
+.replace(/[\u0300-\u036f]/g, "")
+.trim()
+}
+
 async function handlePokemonName(value){
+    if(value.length < 2) return
 
-let input = value.toLowerCase().trim()
-
+let input = normalize(value)
 let name = POKEMON_FR[input] || input
 
 if(!name) return
@@ -952,6 +1298,7 @@ let data = await res.json()
 
 /* SPRITE */
 document.getElementById("p_sprite").src = data.sprites.front_default
+document.getElementById("p_sprite_shiny").src = data.sprites.front_shiny
 
 /* ID */
 document.getElementById("p_id").value = data.id
@@ -971,9 +1318,7 @@ function convert(stat){
 return Math.min(5, Math.floor(stat / 40))
 }
 
-setPoints("p_strength", convert(atk))
-setPoints("p_vitality", convert(def))
-setPoints("p_dexterity", convert(spd))
+updatePokemonDataFromPokedex(name)
 
 savePokemon()
 updateTeam()
@@ -984,7 +1329,93 @@ console.log("Pokemon not found")
 
 }
 
+function goBack(){
+
+if(LAST_PAGE?.page === "pokemon"){
+currentPokemon = LAST_PAGE.slot
+loadPokemon()
+show("pokemon")
+return
+}
+
+show("team")
+}
+
+function updatePokemonDataFromPokedex(name){
+    
+
+let p = POKEDEX.find(p => p.name.toLowerCase() === name.toLowerCase())
+
+if(!p) return
+if(!p.moves) p.moves = []
+if(!p.abilities) p.abilities = []
+
+CURRENT_POKEMON = p
+
+/* ABILITIES */
+let abilitiesList = document.getElementById("pokemonAbilitiesList")
+abilitiesList.innerHTML = ""
+
+if(Array.isArray(p.abilities)){
+p.abilities.forEach(a=>{
+let option = document.createElement("option")
+option.value = a.name
+abilitiesList.appendChild(option)
+})
+}
+
+displayPokemonMoves()
+displayPokemonAbility()
+
+let stats = p.stats || {}
+
+setDynamicPoints("p_strength", stats.strength?.value || 0, stats.strength?.max || 5)
+setDynamicPoints("p_dexterity", stats.dexterity?.value || 0, stats.dexterity?.max || 5)
+setDynamicPoints("p_vitality", stats.vitality?.value || 0, stats.vitality?.max || 5)
+setDynamicPoints("p_special", stats.special?.value || 0, stats.special?.max || 5)
+setDynamicPoints("p_insight", stats.insight?.value || 0, stats.insight?.max || 5)
+}
+
+function goToMove(inputId){
+
+let value = document.getElementById(inputId).value
+if(!value) return
+
+LAST_PAGE = {
+page: "pokemon",
+slot: currentPokemon
+}
+
+show("moves")
+
+document.getElementById("move_search").value = value
+
+let move = getMoveByName(value)
+displayMove(move)
+
+}
+
+function goToAbility(){
+
+let value = document.getElementById("p_ability").value
+if(!value) return
+
+LAST_PAGE = {
+page: "pokemon",
+slot: currentPokemon
+}
+
+show("abilities")
+
+document.getElementById("ability_search").value = value
+
+let ability = getAbilityByName(value)
+displayAbility(ability)
+
+}
+
 async function init(){
+await loadPokemonFR()
 await loadPokemonJSON()
 await loadMovesJSON()
 await loadAbilitiesJSON()
@@ -994,6 +1425,8 @@ loadPokemonList()
 loadMovesList()
 loadAbilitiesList()
 loadPokedexList()
+
+initTrainerPoints()
 }
 
 init()
