@@ -554,7 +554,6 @@ z-index:0;
 </div>
 <label>Pokédex ID</label> <input id="p_id" type="number">
 <label>Nature</label> <select id="p_trainerNature"></select>
-<label>Money</label> <input id="p_money">
 <label>HP</label> <input id="p_hp" type="number">
 <label>Will</label> <input id="p_will" type="number">
 <label>Confidence</label> <input id="p_confidence" type="number">
@@ -657,7 +656,6 @@ z-index:0;
 
 </div>
 <div class="card" id="pokemon_move_display" style="display:none"></div>
-<div class="card" id="pokemon_ability_display" style="display:none"></div>
 
 </div>
 
@@ -693,10 +691,6 @@ z-index:0;
 </div>
 <datalist id="movesList"></datalist>
 
-</div>
-
-<div class="card" id="move_result" style="display:none">
-
 <h3 id="move_name"></h3>
 
 <p><b>Type :</b> <span id="move_type"></span></p>
@@ -731,10 +725,6 @@ z-index:0;
 <datalist id="abilitiesList"></datalist>
 <datalist id="pokemonAbilitiesList"></datalist>
 
-</div>
-
-<div class="card" id="ability_result" style="display:none">
-
 <h3 id="ability_name"></h3>
 
 <p><b>Description :</b></p>
@@ -754,10 +744,6 @@ z-index:0;
 <label>Nom</label>
 <input id="pokedex_search">
 <div id="pokedex_autocomplete" class="autocomplete-list"></div>
-
-</div>
-
-<div class="card" id="pokedex_result" style="display:none">
 
 <h3 id="pokedex_name"></h3>
 
@@ -1081,8 +1067,6 @@ function displayMove(move){
 
 if(!move) return
 
-document.getElementById("move_result").style.display = "block"
-
 document.getElementById("move_name").textContent = move.name
 document.getElementById("move_type").textContent = move.type
 document.getElementById("move_category").textContent = move.category
@@ -1146,8 +1130,6 @@ return ABILITIES.find(a => a.name.toLowerCase() === name.toLowerCase())
 function displayAbility(a){
 
 if(!a) return
-
-document.getElementById("ability_result").style.display = "block"
 
 document.getElementById("ability_name").textContent = a.name
 document.getElementById("ability_description").textContent =
@@ -1218,8 +1200,6 @@ return POKEDEX.find(p => p.name.toLowerCase() === name.toLowerCase())
 function displayPokedex(p){
 
 if(!p) return
-
-document.getElementById("pokedex_result").style.display = "block"
 
 /* NOM FR */
 let frName = Object.keys(POKEMON_FR).find(key => POKEMON_FR[key] === p.name)
@@ -1336,9 +1316,6 @@ input.oninput = ()=>{
 
 let a = getAbilityByName(input.value)
 if(!a) return
-
-let div = document.getElementById("pokemon_ability_display")
-div.style.display = "block"
 
 div.innerHTML = `
 <b>${a.name}</b><br><br>
@@ -1692,12 +1669,23 @@ input.addEventListener("input", ()=>{
 let value = input.value.toLowerCase()
 container.innerHTML = ""
 
-if(value.length < 2) return
+if(value.length < 2){
+container.style.display = "none"
+return
+}
 
-list
+let results = list
 .filter(item => item.toLowerCase().includes(value))
 .slice(0, 20)
-.forEach(item=>{
+
+if(results.length === 0){
+container.style.display = "none"
+return
+}
+
+container.style.display = "block"
+
+results.forEach(item=>{
 
 let div = document.createElement("div")
 div.className = "autocomplete-item"
@@ -1706,8 +1694,9 @@ div.textContent = item
 div.onclick = ()=>{
 input.value = item
 container.innerHTML = ""
+container.style.display = "none"
 input.dispatchEvent(new Event("input"))
-input.blur() // 👈 ferme le clavier mobile
+input.blur()
 }
 
 container.appendChild(div)
@@ -1716,15 +1705,22 @@ container.appendChild(div)
 
 })
 
+/* 👇 IMPORTANT : gestion du blur */
+input.addEventListener("blur", ()=>{
+
+// petit délai pour laisser le click passer
+setTimeout(()=>{
+container.style.display = "none"
+}, 150)
+
+})
+
+/* 👇 si on clique dans la liste → ne pas fermer */
+container.addEventListener("mousedown", (e)=>{
+e.preventDefault()
+})
 
 }
-["p_move1","p_move2","p_move3","p_move4"].forEach(id=>{
-setupAutocomplete(
-id,
-MOVES.map(m=>m.name),
-id+"_autocomplete"
-)
-})
 
 async function init(){
 await loadPokemonFR()
@@ -1736,6 +1732,17 @@ await loadPokedexJSON()
 loadPokemonList()
 loadMovesList()
 loadAbilitiesList()
+
+
+if(Array.isArray(MOVES)){
+["p_move1","p_move2","p_move3","p_move4"].forEach(id=>{
+setupAutocomplete(
+id,
+MOVES.map(m=>m.name),
+id+"_autocomplete"
+)
+})
+}
 setupAutocomplete(
 "pokedex_search",
 Object.keys(POKEMON_FR).map(n => n.charAt(0).toUpperCase()+n.slice(1)),
